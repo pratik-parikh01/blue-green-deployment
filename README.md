@@ -29,3 +29,50 @@ The kubernetes manifest files are stored in the `manifests` directory. There are
 
 To deploy/update, just run `deploy.sh`. This will create or update the kubernetes components.
 
+## Testing
+
+To test, just port-forward the istio-ingressgateway service, command is as follows:
+```
+kubectl -n istio-system port-forward svc/istio-ingressgateway 8000:80
+```
+Now hit the `http://localhost:8000/` with browser or use `curl localhost:8000` command and see the switch between the different versions
+
+## Full end to end test and validation
+
+Steps:
+
+1. Ensure you have the following prerequistes:
+* docker for building the app image. This is optional if you do not wish to build the components and use the ones that I have built.
+* kubectl and access to a kubernetes cluster.
+* helm for installing istio helm chart. This is optional if you already have helm installed.
+
+1. Install the prerequistes, i.e. istio. For this, just go to the `istio-helm-chart` and run the command. Optional if you already have istio installed.
+```
+helm install --namespace=istio-system istio .
+```
+
+2. Now to deploy the components, simply run `deploy.sh` and wait for the resources to get deployed
+
+3. Once all resources are deployed, run the following command to access the service locally
+```
+kubectl -n istio-system port-forward svc/istio-ingressgateway 8000:80
+```
+
+4. Finally, run the command `curl localhost:8000` or go to browser and hit the url `http://localhost:8000` and see the results
+
+5. The results will switch between blue version and green version everytime you hit the refresh button on the browser or fire the curl command again.
+
+6. To test if this works properly, update the virtual-service.yaml and adjusts the weights (eg. 0 and 100) and run `deploy.sh` again
+
+7. Now if you curl or use the browser again, only that version will be shown which has the 100 weight and the one with 0 weight will not be shown.
+
+8. Finally adjust the weights as desired and run `deploy.sh` again. The traffic will be again distributed according to the specified weights.
+
+## Cleanup
+
+To delete the required resources, just run the following commands
+
+```
+helm uninstall istio -n istio-system
+kubectl delete namespace assignment
+```
