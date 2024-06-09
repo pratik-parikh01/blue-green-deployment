@@ -29,6 +29,8 @@ The kubernetes manifest files are stored in the `manifests` directory. There are
 
 To deploy/update, just run `deploy.sh`. This will create or update the kubernetes components.
 
+The helm chart for istio has been taken from here: https://github.com/rancher/charts/tree/release-v2.8/charts/rancher-istio/103.3.0%2Bup1.21.1
+
 ## Testing
 
 To test, just port-forward the istio-ingressgateway service, command is as follows:
