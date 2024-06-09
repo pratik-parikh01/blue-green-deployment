@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    function: assignment
+    version: green
+  name: assignment-app-green
+  namespace: assignment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      function: assignment
+      version: green
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        function: assignment
+        version: green
+    spec:
+      containers:
+      - args:
+        - /app/Run.sh
+        command:
+        - /bin/sh
+        - -c
+        - --
+        image: pratikparikh/sample-app:v2
+        imagePullPolicy: Always
+        name: assignment-app-green
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: assignment-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - assignment-gateway
+  http:
+    - route:
+      - destination:
+          host: assignment-app
+          subset: v1
+        weight: 50
+      - destination:
+          host: assignment-app
+          subset: v2
+        weight: 50

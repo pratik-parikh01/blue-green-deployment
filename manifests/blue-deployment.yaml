@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    function: assignment
+    version: blue
+  name: assignment-app-blue
+  namespace: assignment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      function: assignment
+      version: blue
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        function: assignment
+        version: blue
+    spec:
+      containers:
+      - args:
+        - /app/Run.sh
+        command:
+        - /bin/sh
+        - -c
+        - --
+        image: pratikparikh/sample-app:v1
+        imagePullPolicy: Always
+        name: assignment-app-blue
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
